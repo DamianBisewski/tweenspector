@@ -8,7 +8,14 @@
 
 ## Funkcjonalności
 
-Rekomendacja podobnych kont na Twitterze na podstawie treści tweetów etc.
+- analiza treści postów danego użytkownika
+- rekomendacja podobnych kont na podstawie treści
+- wyszukanie użytkowników najczęściej piszących na dany temat
+
+## Aspekt badawczy
+
+Analiza postów i treści udostępnianych przez danego użytkownika oraz znalezienie powiązań z innymi
+użytkownikami na ich podstawie.
 
 ## Podział
 
