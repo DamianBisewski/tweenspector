@@ -23,7 +23,7 @@ użytkownikami na ich podstawie.
 |:--------------:|:---------------:|
 | analiza danych | Damian Bisewski |
 | frontend       | Marian Buzak    |
-| web-scrapping  | Jakub Chyła     |
+| web-scrapping  | Damian Bisewski |
 
 ## Technologie
 
