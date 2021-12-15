@@ -29,18 +29,21 @@ użytkownikami na ich podstawie.
 
 Python:
 
-1. web scrapping - BeautifulSoup
+1. web scrapping - twint
 2. UI - tkinter
+3. Rysowanie mapy słów - wordcloud
+4. Lematyzacja tekstu - Morfeusz2
+5. Dodatkowo pandas, matplotlib.pyplot
 
 ## Input
 1. Pole wejścia na nazwę użytkownika Twittera oraz ramy czasowe twettów
-2. Pole wejścia do określenia dokładności powiązań między słowami
+2. Pole wejścia do określenia sieci powiązań danego użytkownika Twittera (z jakimi kontami dany użytkownik ma najwięcej interakcji)
 3. Przycisk do wybrania funkcjonalności
 4. Przycisk do wyświetlenia wyników
 
 ## Output
 Dla określonej funkcjonalności aplikacja wyświetla:
-- **Najczęściej występujące słowa**: WordCloud z tymi słowami (oprócz słów nieznaczących)
+- **Najczęściej występujące słowa**: WordCloud z tymi słowami (oprócz słów nieznaczących - stopwords.txt)
 - **Sieć powiązań użytkowników z danym kontem**: sieć powiązań w formie grafu
 - **Znalezienie kont o podobnej tematyce**: listę kont podobnych
 
