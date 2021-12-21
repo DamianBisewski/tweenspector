@@ -37,17 +37,22 @@ Python:
 
 ## Input
 1. Pole wejścia na nazwę użytkownika Twittera oraz ramy czasowe twettów
-2. Pole wejścia do określenia sieci powiązań danego użytkownika Twittera (z jakimi kontami dany użytkownik ma najwięcej interakcji)
-3. Przycisk do wybrania funkcjonalności
+2. Pole wejścia wyrażone w procentach do określenia sieci powiązań danego użytkownika Twittera (z jakimi kontami dany użytkownik ma najwięcej interakcji)
+3. Pole wyboru w celu określenia funkcjonalności
 4. Przycisk do wyświetlenia wyników
+5. Przyciski do zapisu danych w formacie .csv oraz jako obraz w formacie .png
 
 ## Output
 Dla określonej funkcjonalności aplikacja wyświetla:
 - **Najczęściej występujące słowa**: WordCloud z tymi słowami (oprócz słów nieznaczących - stopwords.txt)
-- **Sieć powiązań użytkowników z danym kontem**: sieć powiązań w formie grafu
+- **Sieć powiązań użytkowników z danym kontem**: sieć powiązań użytwników Twiterra w formie grafu
 - **Znalezienie kont o podobnej tematyce**: listę kont podobnych
 
 ## Processing workflow
-1. Aplikacja zostaje otwarta i prosi użytkownika o podanie nazwy użytkownika na Twitterze oraz ram czasowych(w razie nieistnienia konta o zadanej nazwie, aplikacja powinna zwrócić komunikat o błędzie)
-2. Po podaniu nazwy istniejącego konta powinna wyświetlić się lista tweetów zdobytych dzięki funkcjonalności biblioteki twint. Wtedy użytkownik powinien mieć do wyboru jedną z trzech dostępnych funkcjonalności
-3. Wszystkie wyniki zwrócone przez aplikację powinny mieć możliwość zapisu do pliku CSV. Aby tak się stało, należy wprowadzić odpowiedni przycisk. Jego wciśnięcie miałoby spowodować zapis do CSV
+Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angielskiego
+1. Aplikacja zostaje otwarta i prosi użytkownika o podanie:
+    - nazwy uzytkownika na Twitterze
+    - ram czasowych twettów
+    - wybranej funkcjonalności
+2. W razie nieistnienia konta o zadanej nazwie, aplikacja powinna zwrócić komunikat o błędzie
+3. Wszystkie wyniki zwrócone przez aplikację powinny mieć możliwość zapisu do pliku CSV lub PNG. Aby tak się stało, należy wybrać odpowiedni przycisk zapisujący dane
