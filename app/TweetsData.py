@@ -2,7 +2,9 @@ import twint
 from wordcloud import WordCloud, STOPWORDS
 import morfeusz2
 import matplotlib.pyplot as plt
-
+import re
+import networkx as nx
+import igraph
 
 class TweetsData:
     def __init__(self, username, num_of_tweets=500):
@@ -43,6 +45,42 @@ class TweetsData:
 
     # users account connections feature
     def generate_another_one(self):
-        plt.figure()
-        plt.suptitle("Hello another one!")
-        plt.savefig("file.png")
+        tweets = self.get_tweets()
+        try:
+            g = igraph.Graph()
+            users = set()
+            rtsmts = set()
+            rtsmts.add(self.username)
+            g.add_vertices(1)
+            G_retweet = nx.DiGraph()
+            G_mention = nx.DiGraph()
+            for r in tweets.iterrows():
+                author = r[1]['username']
+                author = f'@{author}'
+                text = r[1]['tweet']
+                rts = set(re.findall(r"RT @(\w+)", text))
+                mts = set(re.findall(r"@(\w+)", text))
+                for rt in rts:
+                    rt = rt.lower()
+                    rtsmts.add(rt)
+                for mt in mts:
+                    mt = mt.lower()
+                    rtsmts.add(mt)
+            num = len(rtsmts)
+            g.add_vertices(num - 1)
+            g.vs["name"] = rtsmts
+            interactions = list(rtsmts)
+            x = 0
+            for i in range(0, num):
+                if interactions[i] == self.username:
+                    x = i
+            for i in range(0, num):
+                if x != i:
+                    g.add_edges([(x, i)])
+            print(g)
+            layout = g.layout("drl")
+            igraph.plot(g, "file.png", layout=layout, vertex_label=rtsmts, bbox=(1500, 900), margin=30, vertex_label_dist=2,
+                        vertex_size=3)
+
+        except ValueError:
+            print("warning")
