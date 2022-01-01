@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import re
 import networkx as nx
 import igraph
+import time
 
 class TweetsData:
     def __init__(self, username, num_of_tweets=500):
@@ -18,8 +19,9 @@ class TweetsData:
             c.Username = self.username
             c.Limit = self.num_of_tweets
             c.Pandas = True
+            c.Retweets = True
             c.Pandas_clean = True
-            print(twint.run.Search(c))
+            print(twint.run.Profile(c))
             return twint.output.panda.Tweets_df[["username", "tweet"]]
         except ValueError:
             print("Taki uzytkownik nie istnieje")
@@ -46,40 +48,58 @@ class TweetsData:
     # users account connections feature
     def generate_another_one(self):
         tweets = self.get_tweets()
+        time.sleep(3)
         try:
+            def get_friend_tweets(username):
+                n_count = 5
+                while True :
+                    con = twint.Config()
+                    con.Username = username
+                    con.Limit = self.num_of_tweets
+                    con.Pandas = True
+                    con.Pandas_clean = True
+                    con.Retweets = True
+                    twint.run.Profile(con)
+                    n_count = n_count - 1
+                    if n_count == 0:
+                        break
+                    if not twint.output.panda.Tweets_df.empty:
+                        break
+                if twint.output.panda.Tweets_df.empty:
+                    print("No tweets from user: ", username)
+                    return twint.output.panda.Tweets_df
+                else:
+                    return twint.output.panda.Tweets_df[["username", "tweet"]]
             g = igraph.Graph()
-            users = set()
-            rtsmts = set()
-            rtsmts.add(self.username)
-            g.add_vertices(1)
-            G_retweet = nx.DiGraph()
-            G_mention = nx.DiGraph()
-            for r in tweets.iterrows():
-                author = r[1]['username']
-                author = f'@{author}'
-                text = r[1]['tweet']
-                rts = set(re.findall(r"RT @(\w+)", text))
-                mts = set(re.findall(r"@(\w+)", text))
-                for rt in rts:
-                    rt = rt.lower()
-                    rtsmts.add(rt)
-                for mt in mts:
-                    mt = mt.lower()
-                    rtsmts.add(mt)
-            num = len(rtsmts)
-            g.add_vertices(num - 1)
-            g.vs["name"] = rtsmts
-            interactions = list(rtsmts)
-            x = 0
-            for i in range(0, num):
-                if interactions[i] == self.username:
-                    x = i
-            for i in range(0, num):
-                if x != i:
-                    g.add_edges([(x, i)])
+            def get_friends(self):
+                rtsmts = set()
+                rtsmts.add(self.username)
+                for r in tweets.iterrows():
+                    text = r[1]['tweet']
+                    mts = set(re.findall(r"@(\w+)", text))
+                    for mt in mts:
+                        mt = mt.lower()
+                        rtsmts.add(mt)
+                return rtsmts
+            rtsmts = get_friends(self)
+            for rtmt in rtsmts:
+                print("Dodaje wierzcholek", rtmt)
+                g.add_vertex(rtmt)
             print(g)
+            for someone in rtsmts:
+                friend_tweets = get_friend_tweets(someone)
+                time.sleep(5)
+                for r in friend_tweets.iterrows():
+                    text = r[1]['tweet']
+                    mts = set(re.findall(r"@(\w+)", text))
+                    for mt in mts:
+                        mt = mt.lower()
+                        if mt in rtsmts:
+                            if mt != someone:
+                                print("adding edge between", someone, " and ", mt)
+                                g.add_edge(someone, mt)
             layout = g.layout("drl")
-            igraph.plot(g, "file.png", layout=layout, vertex_label=rtsmts, bbox=(1500, 900), margin=30, vertex_label_dist=2,
+            igraph.plot(g, "file.png", layout=layout, vertex_label=rtsmts, bbox=(4500, 2700), margin=30, vertex_label_dist=2,
                         vertex_size=3)
 
         except ValueError:
