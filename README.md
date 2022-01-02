@@ -4,13 +4,12 @@
 
 1. Damian Bisewski
 2. Marian Buzak
-3. Jakub Chyła
 
 ## Funkcjonalności
 
 - analiza treści postów danego użytkownika
 - rekomendacja podobnych kont na podstawie treści
-- wyszukanie użytkowników najczęściej piszących na dany temat
+- statystyki o użytkowniku
 
 ## Aspekt badawczy
 
@@ -32,21 +31,20 @@ Python:
 1. web scrapping - twint
 2. UI - tkinter
 3. Rysowanie mapy słów - wordcloud
-4. Lematyzacja tekstu - Morfeusz2
+4. Lematyzacja tekstu - Morfeusz2, spacy
 5. Dodatkowo pandas, matplotlib.pyplot
 
 ## Input
-1. Pole wejścia na nazwę użytkownika Twittera oraz ramy czasowe twettów
-2. Pole wejścia wyrażone w procentach do określenia sieci powiązań danego użytkownika Twittera (z jakimi kontami dany użytkownik ma najwięcej interakcji)
-3. Pole wyboru w celu określenia funkcjonalności
-4. Przycisk do wyświetlenia wyników
-5. Przyciski do zapisu danych w formacie .csv oraz jako obraz w formacie .png
+1. Pole wejścia na nazwę użytkownika Twittera oraz ramy czasowe tweetów
+2. Pole wyboru w celu określenia funkcjonalności
+3. Przycisk do wyświetlenia wyników
+4. Przyciski do zapisu danych w formacie .csv oraz jako obraz w formacie .png
 
 ## Output
 Dla określonej funkcjonalności aplikacja wyświetla:
 - **Najczęściej występujące słowa**: WordCloud z tymi słowami (oprócz słów nieznaczących - stopwords.txt)
-- **Sieć powiązań użytkowników z danym kontem**: sieć powiązań użytwników Twiterra w formie grafu
-- **Znalezienie kont o podobnej tematyce**: listę kont podobnych
+- **Sieć powiązań użytkowników z danym kontem**: sieć powiązań użytwników Twittera w formie grafu
+- **Statystyki o użytkowniku**: Najwyższa, najniższa i średnia liczba polubień oraz podań dalej tweetów użytkownika, lokalizacje, z których pisał użytkownik, konta, którym najczęściej odpisywał użytkownik, godziny, w których najczęściej pisał użytkownik oraz hasztagi, jakich używał użytkownik
 
 ## Processing workflow
 Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angielskiego
