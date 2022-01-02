@@ -50,7 +50,12 @@ Dla określonej funkcjonalności aplikacja wyświetla:
 Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angielskiego
 1. Aplikacja zostaje otwarta i prosi użytkownika o podanie:
     - nazwy uzytkownika na Twitterze
-    - ram czasowych twettów
+    - ram czasowych tweetów
     - wybranej funkcjonalności
 2. W razie nieistnienia konta o zadanej nazwie, aplikacja powinna zwrócić komunikat o błędzie
 3. Wszystkie wyniki zwrócone przez aplikację powinny mieć możliwość zapisu do pliku CSV lub PNG. Aby tak się stało, należy wybrać odpowiedni przycisk zapisujący dane
+
+## Instalacja spacy
+Do lematyzacji tekstu używany jest moduł spacy, aby zainstalować odpowiedni model języka do lematyzacji, należy w wierszu polecenia wpisać 
+1. !pip install spacy
+2. python -m spacy download pl_core_news_lg
