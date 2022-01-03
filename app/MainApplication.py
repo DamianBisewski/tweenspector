@@ -54,7 +54,7 @@ class MainApplication(tk.Frame):
         self.nav_b = tk.Button(self.nav_f, text="Wyszukaj", command=lambda: self.search_result(self.nav_cb.get()))
 
         # grid
-        self.title_l.grid(row=1, column=1, columnspan=len(self.nav_l)+1, pady=(40, 20))
+        self.title_l.grid(row=1, column=1, columnspan=len(self.nav_l) + 1, pady=(40, 20))
 
         self.nav_l[0].grid(row=2, column=1, pady=(10, 0), padx=(300, 0))
         self.nav_l[1].grid(row=2, column=2, pady=(10, 0), padx=(50, 0))
@@ -70,11 +70,14 @@ class MainApplication(tk.Frame):
         picked_feature = self.nav_cb.get()
         self.act_l = tk.Label(self.nav_f, text=features[picked_feature],
                               bg=bg, fg="white", font=large_font)
-        self.act_l.grid(row=4, column=1, columnspan=len(self.nav_l)+1, padx=(300, 0), sticky="nw")
+        self.act_l.grid(row=4, column=1, columnspan=len(self.nav_l) + 1, padx=(300, 0), sticky="nw")
 
     def search_result(self, feature):
         text_input = self.nav_e[0].get()
         tweets_count = self.nav_e[1].get()
+        date_to = ''  # TBD
+        date_from = ''  # TBD
+        search_words = ''  # TBD
         valid_graph = True
 
         for entry in self.nav_e:
@@ -95,7 +98,7 @@ class MainApplication(tk.Frame):
             else:
                 self.graph_position = True
                 image_column = 2
-            self.feature_strategy = FeatureStrategy(feature, text_input, tweets_count)
+            self.feature_strategy = FeatureStrategy(feature, text_input, search_words, date_from, date_to, tweets_count)
             self.feature_strategy.feature.generate_image()
 
             image_shape = (350, 600)
@@ -139,7 +142,6 @@ class MainApplication(tk.Frame):
         file = filedialog.asksaveasfile(mode='w', defaultextension=".png",
                                         filetypes=(("PNG file", "*.png"), ("All Files", "*.*")))
         if file:
-            abs_file = os.path.abspath(file.name)
             image_to_save.save(abs_file)
 
     def save_csv(self):

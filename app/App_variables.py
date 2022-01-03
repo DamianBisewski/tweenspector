@@ -13,5 +13,5 @@ features = {"":
                 "Opis funkcjonalności: zbiór najczęściej używanych słów dla danego użytkownika Twittera",
             "Powiązane konta":
                 "Opis funkcjonalności: sieć powiązanych kont z danym użytkownikiem Twittera",
-            "Konta podobne":
-                "Opis funkcjonalności: lista kont podobnych z podanym użytkownikiem Twittera"}
+            "Informacja o koncie":
+                "Opis funkcjonalności: informacja o aktywnosci na koncie użytkownika Twittera"}
