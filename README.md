@@ -8,7 +8,7 @@
 ## Funkcjonalności
 
 - analiza treści postów danego użytkownika
-- rekomendacja podobnych kont na podstawie treści
+- analiza interakcji danego użytkownika z innymi użytkownikami
 - statystyki o użytkowniku
 
 ## Aspekt badawczy
