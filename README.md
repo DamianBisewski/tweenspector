@@ -13,8 +13,9 @@
 
 ## Aspekt badawczy
 
-Analiza postów i treści udostępnianych przez danego użytkownika oraz znalezienie powiązań z innymi
-użytkownikami na ich podstawie.
+- analiza słownictwa używanego przez użytkowników Twittera (jednego z najpopularniejszych portali społecznościowych)
+- analiza powiązań między użytkownikami Twittera (czy mamy do czynienia z hermetycznymi bańkami czy wymiana myśli jest szersza)
+- analiza zachowań użytkownika (częstotliwości pisania czy liczby generowanych reakcji)
 
 ## Podział
 
@@ -28,7 +29,7 @@ użytkownikami na ich podstawie.
 
 Python:
 
-1. web scrapping - twint
+1. web scraping - twint
 2. UI - tkinter
 3. Rysowanie mapy słów - wordcloud
 4. Lematyzacja tekstu - Morfeusz2, spacy
@@ -44,7 +45,7 @@ Python:
 Dla określonej funkcjonalności aplikacja wyświetla:
 - **Najczęściej występujące słowa**: WordCloud z tymi słowami (oprócz słów nieznaczących - stopwords.txt)
 - **Sieć powiązań użytkowników z danym kontem**: sieć powiązań użytwników Twittera w formie grafu
-- **Statystyki o użytkowniku**: Najwyższa, najniższa i średnia liczba polubień oraz podań dalej tweetów użytkownika, lokalizacje, z których pisał użytkownik, konta, którym najczęściej odpisywał użytkownik, godziny, w których najczęściej pisał użytkownik oraz hasztagi, jakich używał użytkownik
+- **Statystyki o użytkowniku**: Wykresy prezentujące najwyższą, najniższą i średnią liczbę polubień oraz podań dalej tweetów użytkownika, lokalizacje, z których pisał użytkownik, konta, którym najczęściej odpisywał użytkownik, godziny, w których najczęściej pisał użytkownik oraz hasztagi, jakich używał użytkownik
 
 ## Processing workflow
 Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angielskiego
