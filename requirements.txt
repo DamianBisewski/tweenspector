@@ -1,0 +1,10 @@
+Requirements:
+Python 3 or greater 
+Twint
+Wordcloud
+igraph
+pandas
+spacy
+Twint installation: pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint 
+In order to install twint, git needed from link: https://git-scm.com/download/win
+
