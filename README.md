@@ -48,7 +48,7 @@ Dla określonej funkcjonalności aplikacja wyświetla:
 - **Statystyki o użytkowniku**: Wykresy prezentujące najwyższą, najniższą i średnią liczbę polubień oraz podań dalej tweetów użytkownika, lokalizacje, z których pisał użytkownik, konta, którym najczęściej odpisywał użytkownik, godziny, w których najczęściej pisał użytkownik oraz hasztagi, jakich używał użytkownik
 
 ## Processing workflow
-Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angielskiego
+Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angielskiego
 1. Aplikacja zostaje otwarta i prosi użytkownika o podanie:
     - nazwy uzytkownika na Twitterze
     - ram czasowych tweetów
@@ -60,3 +60,14 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polsiego i angie
 Do lematyzacji tekstu używany jest moduł spacy, aby zainstalować odpowiedni model języka do lematyzacji, należy w wierszu polecenia wpisać 
 1. !pip install spacy
 2. python -m spacy download pl_core_news_lg
+
+## Instalacja twint
+Git:
+git clone https://github.com/twintproject/twint.git
+cd twint
+pip3 install . -r requirements.txt
+Pip:
+pip3 install twint
+or
+pip3 install --user --upgrade -e git+https://github.com/twintproject/twint.git@origin/master#egg=twint
+
