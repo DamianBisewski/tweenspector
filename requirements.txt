@@ -1,12 +1,19 @@
-Requirements:
-Python 3 or greater 
-Twint
-Wordcloud
+Python 3
+tkinter
+matplotlib
+matplotlib.pyplot
+matplotlib.image
+tkcalendar
+datetime
+PIL
+twint
+wordcloud
+morfeusz2
 igraph
+re
 pandas
-spacy
 statistics
-stopwords.txt
-Twint installation: pip3 install --user --upgrade git+https://github.com/twintproject/twint.git@origin/master#egg=twint 
-In order to install twint, git needed from link: https://git-scm.com/download/win
-
+spacy
+pl_core_news_lg
+math
+time
