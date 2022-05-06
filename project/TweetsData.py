@@ -9,6 +9,7 @@ import spacy
 import pl_core_news_lg
 import matplotlib.pyplot as plt
 import matplotlib
+import math
 from App_variables import *
 
 
@@ -64,23 +65,24 @@ class TweetsData:
             c.Since = date_from
             c.Until = date_to
             c.Search = search_words
+            c.Hide_output = True
             twint.run.Profile(c)
-            self.num_of_tweets_read = twint.output.panda.Tweets_df.shape[0]
-            print('Number of tweets read: ', self.num_of_tweets_read)
-            #if self.test_mode_enabled():
+            # if self.test_mode_enabled():
             #    print('saving')
             #    save_tweets_df_to_csv(username + '.csv', twint.output.panda.Tweets_df)
             if twint.output.panda.Tweets_df.empty:
                 print("No tweets from user: ", username)
                 return twint.output.panda.Tweets_df
             else:
-                return twint.output.panda.Tweets_df  # [["username", "tweet"]]
+                return twint.output.panda.Tweets_df
         except ValueError:
-            return False
-
+            print("Get tweets - Blad wartosci")
+            return pd.DataFrame()
+        except:
+            print("Get tweets - Cos poszlo nie tak")
+            return pd.DataFrame()
     def generate_word_cloud(self):
-        tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets, )
-        print(tweets.tweet)
+        tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
         try:
             stopwords = set(STOPWORDS)
             lemmatizer_enabled = True
@@ -92,18 +94,13 @@ class TweetsData:
             preprocessed_tweets_text = ''
             original_tweets_text = ''
             if lemmatizer_enabled:
-                original_tweets_text = tweets.tweet.values  # adding movie script specific stopwords
-                # nlp = spacy.load("pl_core_news_lg")
+                original_tweets_text = tweets.tweet.values
                 nlp = pl_core_news_lg.load()
                 tweets_text_from_lemmatizer = nlp(str(original_tweets_text))
                 preprocessed_tweets_text = ''
                 for t in tweets_text_from_lemmatizer:
-                    # print(f"{t.text:<8} => {t.lemma_:<8}")
                     if t.lemma_ not in stopwords:
-                        # print("added")
                         preprocessed_tweets_text = preprocessed_tweets_text + ' ' + t.lemma_
-                    # else:
-                        # print("filtered")
             else:
                 preprocessed_tweets_text = tweets.tweet.values
             if self.test_mode_enabled():
@@ -120,19 +117,22 @@ class TweetsData:
                     colormap='Pastel1',
                     width=1000,
                     height=500,
-                    stopwords=stopwords).generate(str(preprocessed_tweets_text))
+                    stopwords=stopwords,
+                    collocation_threshold=3,
+                    max_words=80).generate(str(preprocessed_tweets_text))
                 wordcloud.to_file("images/file.png")
         except ValueError:
-            print("warning")
+            print("Generate word cloud - Blad wartosci")
+        except:
+            print("Generate word cloud - Cos poszlo nie tak")
 
-    # users account connections feature
     def generate_interconnections_network(self):
         tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
         print(type(tweets))
         try:
             def get_friends(self):
                 rtsmts = set()
-                rtsmts.add(self.username)
+                rtsmts.add(self.username.lower())
                 for r in tweets.iterrows():
                     text = r[1]['tweet']
                     mts = set(re.findall(r"@(\w+)", text))
@@ -143,13 +143,14 @@ class TweetsData:
             g = igraph.Graph(directed=True)
             rtsmts = get_friends(self)
             for rtmt in rtsmts:
-                print("Adding vertex: ", rtmt)
                 g.add_vertex(rtmt)
-            print(g)
             relations = dict()
             for someone in rtsmts:
                 relations[someone] = dict()
                 friend_tweets = self.get_tweets(someone, self.search_words, self.Since, self.Until, self.num_of_tweets)
+                if friend_tweets.empty:
+                    print("Generate interconnections network - Brak konta")
+                    continue
                 for r in friend_tweets.iterrows():
                     text = r[1]['tweet']
                     mts = set(re.findall(r"@(\w+)", text))
@@ -163,34 +164,30 @@ class TweetsData:
                                     relations[someone][mt] = 1
             for someone in rtsmts:
                 temp = relations[someone]
-                print(temp)
                 for key, value in temp.items():
                     g.add_edge(someone, key)
+            x = 1000 * math.log(len(rtsmts))
+            y = 600 * math.log(len(rtsmts))
             visual_style = {}
             visual_style["vertex_size"] = 40
             visual_style["vertex_label_size"] = 50
             visual_style["vertex_label_dist"] = 2
             visual_style["margin"] = 250
-            visual_style["bbox"] = (5000, 3000)
-            visual_style["vertex_color"] = ["blue" if vertex_name == self.username else "red" for vertex_name in
-                                            g.vs["name"]]
+            visual_style["bbox"] = (x, y)
             visual_style["vertex_label"] = rtsmts
-            visual_style["layout"] = g.layout("circle")
-            visual_style["edge_width"] = [relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]] for edge in
+            visual_style["edge_width"] = [math.log(2*relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]], 1.5) for edge in
                                           g.es]
-            # visual_style["edge_label"] = [str(relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]]) for edge in
-            #                              g.es]
-            visual_style["edge_arrow_width"] = [relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]] for edge
-                                                in g.es]
-            igraph.plot(g, "images/file.png", **visual_style)
+            comm = g.community_infomap()
+            igraph.plot(comm, "images/file.png", **visual_style, mark_groups = True)
             if self.test_mode_enabled():
                 self.interconnection_graph = g
         except ValueError:
-            print("warning")
+            print("Generate interconnections network - Blad wartosci")
+        except:
+            print("Generate interconnections network - Cos poszlo nie tak")
 
     def generate_user_stats(self, option):
         def generate_account_info(df):
-            print(df)
             date1 = pd.to_datetime(df.iloc[0].date)
             date2 = pd.to_datetime(df.iloc[int(self.num_of_tweets_read) - 1].date)
             usersdict = dict()
@@ -208,7 +205,6 @@ class TweetsData:
                     hourdict[hour] = hourdict[hour] + 1
                 else:
                     hourdict[hour] = 1
-            print(df.retweet)
             account_stats = {
                 'avglikes': round(sum(df[df.retweet == False].nlikes) / len(df[df.retweet == False].nlikes)),
                 'maxlikes': max(df[df.retweet == False].nlikes),
@@ -329,7 +325,6 @@ class TweetsData:
             hashtag_count = [i[1] for i in filter_hashtag]
 
             plt.figure(figsize=(12, 5))
-
             plt.barh(hashtag_name, hashtag_count)
             plt.title("Wykres 10 najczęściej występujących hashtagów")
             plt.xlabel("Ilość wystąpień hashtagu"), plt.ylabel("Nazwa hashtagu")
@@ -346,6 +341,3 @@ class TweetsData:
             generate_tweets_hour_chart()
         elif option == 3:
             generate_hashtag_chart()
-
-#td = TweetsData("krzysztofbosak", None, "2022-01-01", "2022-01-15", 100)
-#save_tweets_df_to_csv("C:/Users/Marian/Desktop/abcd.csv", td.get_tweets("krzysztofbosak", None, "2022-01-01", "2022-01-15", 100))
