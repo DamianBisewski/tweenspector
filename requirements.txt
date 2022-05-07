@@ -1,19 +1,10 @@
-Python 3
-tkinter
+spacy>=3.3.0.dev0,<3.4.0
+https://github.com/explosion/spacy-models/releases/download/pl_core_news_lg-3.3.0/pl_core_news_lg-3.3.0.tar.gz#egg=pl_core_news_lg
+git+https://github.com/minamotorin/twint.git@origin/master#egg=twint
 matplotlib
-matplotlib.pyplot
-matplotlib.image
-tkcalendar
-datetime
-PIL
-twint
-wordcloud
-morfeusz2
 igraph
-re
+pycairo
+morfeusz2
 pandas
-statistics
-spacy
-pl_core_news_lg
-math
-time
+wordcloud
+tkcalendar
