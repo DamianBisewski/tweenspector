@@ -93,6 +93,14 @@ class TweetsData:
                 word = file.readline().replace('\n', '')
             preprocessed_tweets_text = ''
             original_tweets_text = ''
+            for tweet in tweets.iterrows():
+                text = tweet[1]['tweet']
+                mts = set(re.findall(r"@(\w+)", text))
+                for mt in mts:
+                    stopwords.add(mt)
+                rts = set(re.findall(r"(RT @\w+)", text))
+                for rt in rts:
+                    stopwords.add(rt)
             if lemmatizer_enabled:
                 original_tweets_text = tweets.tweet.values
                 nlp = pl_core_news_lg.load()
@@ -117,9 +125,7 @@ class TweetsData:
                     colormap='Pastel1',
                     width=1000,
                     height=500,
-                    stopwords=stopwords,
-                    collocation_threshold=3,
-                    max_words=80).generate(str(preprocessed_tweets_text))
+                    stopwords=stopwords).generate(str(preprocessed_tweets_text))
                 wordcloud.to_file("images/file.png")
         except ValueError:
             print("Generate word cloud - Blad wartosci")
@@ -245,23 +251,6 @@ class TweetsData:
                                 account_stats['hashtagdict'][hashtag] = account_stats['hashtagdict'][hashtag] + 1
                             else:
                                 account_stats['hashtagdict'][hashtag] = 1
-            print("avglikes ", account_stats['avglikes'])
-            print(account_stats['maxlikes'])
-            print(account_stats['minlikes'])
-            print(account_stats['medianlikes'])
-            print(account_stats['avgretweets'])
-            print(account_stats['maxretweets'])
-            print(account_stats['minretweets'])
-            print(account_stats['medianretweets'])
-            print(type(account_stats['interval']))
-            print(account_stats['interval'])
-            if account_stats['places']:
-                print(account_stats['places'])
-            else:
-                print("No places found.")
-            print("hashtagdict ", account_stats['hashtagdict'])
-            print(account_stats['usersdict'])
-            print(account_stats['hourdict'])
             return account_stats
 
         data_frame = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
