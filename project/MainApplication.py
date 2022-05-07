@@ -48,23 +48,26 @@ class MainApplication:
         self.title_l = tk.Label(self.main_f, text="TwitterData", font=title_font, bg=bg, fg="white")
 
         self.nav_l = [tk.Label(self.main_f, text="Nazwa użytkownika", fg="white", bg=bg, font=large_font),
-                      tk.Label(self.main_f, text="Liczba twettów", fg="white", bg=bg, font=large_font),
+                      tk.Label(self.main_f, text="Poszukiwane słowo", fg="white", bg=bg, font=large_font),
+                      tk.Label(self.main_f, text="Liczba tweetów", fg="white", bg=bg, font=large_font),
                       tk.Label(self.main_f, text="Data początkowa", fg="white", bg=bg, font=large_font),
                       tk.Label(self.main_f, text="Data końcowa", fg="white", bg=bg, font=large_font),
                       tk.Label(self.main_f, text="Wybierz funkcjonalność", fg="white", bg=bg, font=large_font)]
 
-        self.step_l = [tk.Label(self.main_f, text="Krok 1: Podaj nazwę użytkownika", fg="white", bg=bg, font=step_font),
+        self.step_l = [tk.Label(self.main_f, text="Krok 1: Podaj nazwę użytkownika i/lub poszukiwane słowo", fg="white", bg=bg, font=step_font),
                        tk.Label(self.main_f, text="Krok 2: Ustal liczbę tweetów i określ ramy czasowe",
                                 fg="white", bg=bg, font=step_font),
                        tk.Label(self.main_f, text="Krok 3: Wybierz funkcjonalność", fg="white", bg=bg, font=step_font)]
 
-        self.nav_e = [tk.Entry(self.main_f, width=25, font=small_font, bd=2)]
+        self.nav_e = [tk.Entry(self.main_f, width=25, font=small_font, bd=2),
+                      tk.Entry(self.main_f, width=25, font=small_font, bd=2)]
 
         self.date_e = [DateEntry(self.main_f, selectmode="day", font=small_font, date_pattern="dd.mm.yyyy"),
                        DateEntry(self.main_f, selectmode="day", font=small_font, date_pattern="dd.mm.yyyy")]
 
         self.nav_cb = [ttk.Combobox(self.main_f, font=small_font),
-                       ttk.Combobox(self.main_f, font=small_font, width=10)]
+                       ttk.Combobox(self.main_f, font=small_font, width=10),
+                       ]
 
         self.date_e[0]["state"] = "readonly"
         self.date_e[1]["state"] = "readonly"
@@ -95,18 +98,20 @@ class MainApplication:
         self.step_l[0].grid(row=2, column=1, columnspan=2, pady=(10, 0), padx=(step_margin, 0), sticky="nw")
         self.nav_l[0].grid(row=3, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
         self.nav_e[0].grid(row=3, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.nav_l[1].grid(row=4, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
+        self.nav_e[1].grid(row=4, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
 
-        self.step_l[1].grid(row=5, column=1, columnspan=2, pady=(10, 0), padx=(step_margin, 0), sticky="nw")
-        self.nav_l[1].grid(row=6, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
-        self.nav_cb[1].grid(row=6, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.step_l[1].grid(row=6, column=1, columnspan=2, pady=(10, 0), padx=(step_margin, 0), sticky="nw")
         self.nav_l[2].grid(row=7, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
-        self.date_e[0].grid(row=7, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.nav_cb[1].grid(row=7, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
         self.nav_l[3].grid(row=8, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
-        self.date_e[1].grid(row=8, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.date_e[0].grid(row=8, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.nav_l[4].grid(row=9, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
+        self.date_e[1].grid(row=9, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
 
-        self.step_l[2].grid(row=9, column=1, columnspan=2, pady=(10, 0), padx=(step_margin, 0), sticky="nw")
-        self.nav_l[4].grid(row=10, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
-        self.nav_cb[0].grid(row=10, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
+        self.step_l[2].grid(row=10, column=1, columnspan=2, pady=(10, 0), padx=(step_margin, 0), sticky="nw")
+        self.nav_l[5].grid(row=11, column=1, pady=(10, 0), padx=(left_margin, 0), sticky="nw")
+        self.nav_cb[0].grid(row=11, column=2, pady=(10, 0), padx=(20, 0), sticky="nw")
 
         self.nav_b[0].grid(row=15, column=1, pady=(50, 0), padx=(step_margin, 0), sticky="ne")
         self.nav_b[1].grid(row=15, column=2, pady=(50, 0), padx=(step_margin, 0), sticky="nw")
@@ -144,22 +149,26 @@ class MainApplication:
 
     def search_result(self, feature):
         text_input = self.nav_e[0].get()
+        search_words = self.nav_e[1].get()
         tweets_count = self.nav_cb[1].get()
-
+        if text_input == '':
+            text_input = None
+        if search_words == '':
+            search_words = None
         format1 = self.date_e[0].get().split(".")[::-1]
         date_from = format1[0] + "-" + format1[1] + "-" + format1[2]
 
         format2 = self.date_e[1].get().split(".")[::-1]
         date_to = format2[0] + "-" + format2[1] + "-" + format2[2]
 
-        valid_graph = self.is_provide_data_valid(feature, text_input, "", date_from, date_to, tweets_count)
+        valid_graph = self.is_provide_data_valid(feature, text_input, search_words, date_from, date_to, tweets_count)
 
         if datetime(int(format1[0]), int(format1[1]), int(format1[2])) >= datetime(int(format2[0]), int(format2[1]), int(format2[2])):
             valid_graph = False
 
         if valid_graph:
             self.text_input = text_input
-            self.search_words = ""
+            self.search_words = search_words
             self.date_from = date_from
             self.date_to = date_to
             self.tweets_count = tweets_count
@@ -178,8 +187,8 @@ class MainApplication:
 
     def is_provide_data_valid(self, feature, text_input, search_words, date_from, date_to, tweets_count):
         for entry in self.nav_e:
-            if entry.get() == "":
-                return False
+            if not entry.get():
+                entry = None
         if feature == "":
             return False
         self.feature_strategy = FeatureStrategy(feature, text_input, search_words, date_from, date_to, tweets_count)
