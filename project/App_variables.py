@@ -11,7 +11,7 @@ bg = '#313131'  # background color
 
 # count combobox
 tweets_count_list = []
-for i in range(50, 1001, 50):
+for i in range(100, 1001, 100):
     tweets_count_list.append(i)
 
 # features

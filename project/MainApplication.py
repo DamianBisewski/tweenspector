@@ -9,7 +9,8 @@ from tkcalendar import DateEntry
 from datetime import datetime
 from PIL import ImageTk, Image
 from TweetsData import save_tweets_df_to_csv
-
+import datetime
+from datetime import date
 
 class MainApplication:
     def __init__(self, parent):
@@ -62,7 +63,11 @@ class MainApplication:
         self.nav_e = [tk.Entry(self.main_f, width=25, font=small_font, bd=2),
                       tk.Entry(self.main_f, width=25, font=small_font, bd=2)]
 
-        self.date_e = [DateEntry(self.main_f, selectmode="day", font=small_font, date_pattern="dd.mm.yyyy"),
+        default = date.today() - datetime.timedelta(days = 30)
+        defday = default.day
+        defmon = default.month
+        defyear = default.year
+        self.date_e = [DateEntry(self.main_f, selectmode="day", font=small_font, date_pattern="dd.mm.yyyy", day = defday, month = defmon, year = defyear),
                        DateEntry(self.main_f, selectmode="day", font=small_font, date_pattern="dd.mm.yyyy")]
 
         self.nav_cb = [ttk.Combobox(self.main_f, font=small_font),
@@ -77,6 +82,7 @@ class MainApplication:
         self.nav_cb[0].bind("<<ComboboxSelected>>", self.set_combobox_description)
 
         self.nav_cb[1]["values"] = tweets_count_list
+        self.nav_cb[1].current(0)
         self.nav_cb[1]["state"] = "readonly"  # block user update combobox
 
         self.nav_b = [tk.Button(self.main_f, command=lambda: self.search_result(self.nav_cb[0].get()),
@@ -126,7 +132,7 @@ class MainApplication:
         picked_feature = self.nav_cb[0].get()
         self.act_l = tk.Label(self.main_f, text=features[picked_feature],
                               bg=bg, fg="white", font=small_font)
-        self.act_l.grid(row=11, column=1, columnspan=2, padx=(100, 0), sticky="nw")
+        self.act_l.grid(row=13, column=1, columnspan=2, padx=(100, 0), sticky="nw")
 
         def set_user_statistics_option():
             def set_radio_value():
@@ -160,10 +166,8 @@ class MainApplication:
 
         format2 = self.date_e[1].get().split(".")[::-1]
         date_to = format2[0] + "-" + format2[1] + "-" + format2[2]
-
         valid_graph = self.is_provide_data_valid(feature, text_input, search_words, date_from, date_to, tweets_count)
-
-        if datetime(int(format1[0]), int(format1[1]), int(format1[2])) >= datetime(int(format2[0]), int(format2[1]), int(format2[2])):
+        if date_from >= date_to:
             valid_graph = False
 
         if valid_graph:
