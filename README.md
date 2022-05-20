@@ -69,3 +69,6 @@ Godziny, w których konto POTUS wysłało ostatnie 100 tweetów (wg strefy czaso
 
 ![POTUSpopularnosc](https://user-images.githubusercontent.com/92164738/169615304-47d6187a-8907-4d81-82d6-84fd6d4957b9.png)
 Maksymalna i średnia popularność ostatnich 100 tweetów konta POTUS
+
+![Pekao_analizy_wordcloud](https://user-images.githubusercontent.com/92164738/169615944-b263920c-1677-49e2-b4d4-16e7c7998946.png)
+Mapa słów wygenerowana dla konta Pekao_Analizy
