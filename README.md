@@ -74,3 +74,6 @@ Maksymalna i średnia popularność ostatnich 100 tweetów konta POTUS
 
 ![Pekao_analizy_wordcloud](https://user-images.githubusercontent.com/92164738/169615944-b263920c-1677-49e2-b4d4-16e7c7998946.png)
 Mapa słów wygenerowana dla konta Pekao_Analizy
+
+![DiagramPrzypadkowUzycia](https://user-images.githubusercontent.com/92164738/169618517-1dd4697e-e496-41b4-8a51-bf8420d98e87.png)
+Diagram przypadków użycia aplikacji
