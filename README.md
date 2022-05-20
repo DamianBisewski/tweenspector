@@ -77,6 +77,7 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 1. Aby zainstalować wszystkie biblioteki, z których składa się urządzenie, po ściągnięciu źródeł należy wpisać komendę:
 
 **pip install requirements.txt**
+
 2. Aby uruchomić aplikację, należy wpisać w katalogu app komendę:
 
 **python MainApplication.py**
