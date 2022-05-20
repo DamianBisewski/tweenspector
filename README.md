@@ -32,7 +32,7 @@ Python:
 1. web scraping - twint
 2. UI - tkinter
 3. Rysowanie mapy słów - wordcloud
-4. Lematyzacja tekstu - Morfeusz2, spacy
+4. Lematyzacja tekstu - spacy
 5. Dodatkowo pandas, matplotlib.pyplot
 
 ## Input
