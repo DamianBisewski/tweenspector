@@ -64,4 +64,5 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 ![twitteranalyser2](https://user-images.githubusercontent.com/92164738/169613771-76b2a7ba-2125-4477-838c-2d1e88f07852.png) 
 Przykładowa sieć powiązań wygenerowana dla Elona Muska
 
-
+![POTUSgodziny](https://user-images.githubusercontent.com/92164738/169615080-458a5682-bf4a-4fd2-b661-81d6811a6986.png)
+Godziny, w których konto POTUS wysłało ostatnie 100 tweetów (wg strefy czasowej UTC+1)
