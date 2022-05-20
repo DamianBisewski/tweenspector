@@ -16,7 +16,7 @@ class MainApplication:
     def __init__(self, parent):
         self.parent = parent
         self.parent.configure(background=bg)
-        self.parent.geometry('600x750')
+        self.parent.geometry('700x750')
         self.parent.title('TwitterData')
         self.parent.wm_iconbitmap('images/app_icon.ico')
         self.parent.resizable(False, False)

@@ -1,6 +1,5 @@
 import twint
 from wordcloud import WordCloud, STOPWORDS
-import morfeusz2
 import re
 import igraph
 import pandas as pd
@@ -13,6 +12,7 @@ import math
 from App_variables import *
 
 
+
 def save_tweets_df_to_csv(filename, tweets_df):
     tweets_df.to_csv(filename)
 
@@ -23,7 +23,6 @@ def load_tweets_df_form_csv(filename):
 
 class TweetsData:
     def __init__(self, username, search_words, date_from, date_to, num_of_tweets=500):
-        self.morf = morfeusz2.Morfeusz()
         self.username = username
         self.num_of_tweets = num_of_tweets
         self.num_of_tweets_read = 0
@@ -34,6 +33,7 @@ class TweetsData:
         self.wordcloud = None  # test mode only
         self.account_stats = None  # test mode only
         self.interconnection_graph = None    # test mode only
+
 
     def test_mode_enable(self):
         self.test_mode = True
@@ -67,9 +67,6 @@ class TweetsData:
             c.Search = search_words
             c.Hide_output = True
             twint.run.Profile(c)
-            # if self.test_mode_enabled():
-            #    print('saving')
-            #    save_tweets_df_to_csv(username + '.csv', twint.output.panda.Tweets_df)
             if twint.output.panda.Tweets_df.empty:
                 print("No tweets from user: ", username)
                 return twint.output.panda.Tweets_df
@@ -134,7 +131,6 @@ class TweetsData:
 
     def generate_interconnections_network(self):
         tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
-        print(type(tweets))
         try:
             def get_friends(self):
                 rtsmts = set()
@@ -168,6 +164,7 @@ class TweetsData:
                                     relations[someone][mt] = relations[someone][mt] + 1
                                 else:
                                     relations[someone][mt] = 1
+
             for someone in rtsmts:
                 temp = relations[someone]
                 for key, value in temp.items():
@@ -257,7 +254,6 @@ class TweetsData:
         account_stats = generate_account_info(data_frame)
         if self.test_mode_enabled():
             self.account_stats = account_stats
-        print(account_stats)
 
         def generate_statistics_chart():
             plt.figure(figsize=(12, 5))
