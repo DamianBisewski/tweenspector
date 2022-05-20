@@ -56,18 +56,7 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 2. W razie nieistnienia konta o zadanej nazwie, aplikacja powinna zwrócić komunikat o błędzie
 3. Wszystkie wyniki zwrócone przez aplikację powinny mieć możliwość zapisu do pliku CSV lub PNG. Aby tak się stało, należy wybrać odpowiedni przycisk zapisujący dane
 
-## Instalacja spacy
-Do lematyzacji tekstu używany jest moduł spacy, aby zainstalować odpowiedni model języka do lematyzacji, należy w wierszu polecenia wpisać 
-1. !pip install spacy
-2. python -m spacy download pl_core_news_lg
-
-## Instalacja twint
-Git:
-git clone https://github.com/twintproject/twint.git
-cd twint
-pip3 install . -r requirements.txt
-Pip:
-pip3 install twint
-or
-pip3 install --user --upgrade -e git+https://github.com/twintproject/twint.git@origin/master#egg=twint
+## Uruchomienie
+1. Aby zainstalować wszystkie biblioteki, z których składa się urządzenie, po ściągnięciu źródeł należy wpisać komendę pip install requirements.txt
+2. Aby uruchomić aplikację, należy wpisać w katalogu app komendę python MainApplication.py
 
