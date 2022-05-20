@@ -26,7 +26,7 @@ Diagram przypadków użycia aplikacji
 |:--------------:|:---------------:|
 | analiza danych | Damian Bisewski |
 | frontend       | Marian Buzak    |
-| web-scrapping  | Damian Bisewski |
+| web-scraping   | Damian Bisewski |
 
 ## Technologie
 
