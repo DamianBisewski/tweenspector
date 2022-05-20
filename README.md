@@ -60,3 +60,8 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 1. Aby zainstalować wszystkie biblioteki, z których składa się urządzenie, po ściągnięciu źródeł należy wpisać komendę pip install requirements.txt
 2. Aby uruchomić aplikację, należy wpisać w katalogu app komendę python MainApplication.py
 
+## Aplikacja w akcji
+![twitteranalyser2](https://user-images.githubusercontent.com/92164738/169613771-76b2a7ba-2125-4477-838c-2d1e88f07852.png) 
+Przykładowa sieć powiązań wygenerowana dla Elona Muska
+
+
