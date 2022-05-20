@@ -66,3 +66,6 @@ Przykładowa sieć powiązań wygenerowana dla Elona Muska
 
 ![POTUSgodziny](https://user-images.githubusercontent.com/92164738/169615080-458a5682-bf4a-4fd2-b661-81d6811a6986.png)
 Godziny, w których konto POTUS wysłało ostatnie 100 tweetów (wg strefy czasowej UTC+1)
+
+![POTUSpopularnosc](https://user-images.githubusercontent.com/92164738/169615304-47d6187a-8907-4d81-82d6-84fd6d4957b9.png)
+Maksymalna i średnia popularność ostatnich 100 tweetów konta POTUS
