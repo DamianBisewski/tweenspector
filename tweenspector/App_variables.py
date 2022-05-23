@@ -15,7 +15,7 @@ for i in range(100, 1001, 100):
     tweets_count_list.append(i)
 
 # features
-features = {"": "UWAGA: wybierz funkcjonalność",
+features = {"Nie wybrano": "UWAGA: wybierz funkcjonalność",
             "Najczęstsze słowa": "Zbiór najczęściej używanych słów dla danego użytkownika" + '\n' + "Twittera",
             "Powiązane konta": "Graf powiązanych kont z danym użytkownikiem Twittera",
             "Statystyki użytkownika": ""}
@@ -25,7 +25,6 @@ features = {"": "UWAGA: wybierz funkcjonalność",
 def timezone_to_string():
     times = {0: "00", 2.5: "15", 5: "30", 7.5: "45"}
     user_time = -time.timezone / 3600
-    print(user_time)
     time_str = ""
     if int(user_time) < 10:
         time_str += "0"

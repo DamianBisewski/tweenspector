@@ -4,13 +4,11 @@ import re
 import igraph
 import pandas as pd
 import statistics
-import spacy
 import pl_core_news_lg
 import matplotlib.pyplot as plt
 import matplotlib
 import math
 from App_variables import *
-
 
 
 def save_tweets_df_to_csv(filename, tweets_df):
@@ -22,8 +20,8 @@ def load_tweets_df_form_csv(filename):
 
 
 class TweetsData:
-    def __init__(self, username, search_words, date_from, date_to, num_of_tweets=500):
-        self.username = username
+    def __init__(self, user_name, search_words, date_from, date_to, num_of_tweets=500):
+        self.user_name = user_name
         self.num_of_tweets = num_of_tweets
         self.num_of_tweets_read = 0
         self.Since = date_from
@@ -32,8 +30,7 @@ class TweetsData:
         self.test_mode = False
         self.wordcloud = None  # test mode only
         self.account_stats = None  # test mode only
-        self.interconnection_graph = None    # test mode only
-
+        self.interconnection_graph = None  # test mode only
 
     def test_mode_enable(self):
         self.test_mode = True
@@ -44,18 +41,15 @@ class TweetsData:
     def test_mode_enabled(self):
         return self.test_mode
 
-    def check_username(self):
-        pass
-
-    def get_tweets(self, username, search_words, date_from, date_to, num_of_tweets):
+    def get_tweets(self, user_name, search_words, date_from, date_to, num_of_tweets):
         if self.test_mode_enabled():
             print('TEST MODE: loading tweets from disc')
-            df = load_tweets_df_form_csv(username + '.csv')
+            df = load_tweets_df_form_csv(user_name + '.csv')
             self.num_of_tweets_read = df.shape[0]
             return df
         try:
             c = twint.Config()
-            c.Username = username
+            c.Username = user_name
             c.Limit = num_of_tweets
             c.Pandas = True
             c.Retweets = True
@@ -68,18 +62,21 @@ class TweetsData:
             c.Hide_output = True
             twint.run.Profile(c)
             if twint.output.panda.Tweets_df.empty:
-                print("No tweets from user: ", username)
+                print("No tweets from user: ", user_name)
                 return twint.output.panda.Tweets_df
             else:
                 return twint.output.panda.Tweets_df
         except ValueError:
-            print("Get tweets - Blad wartosci")
+            print("Get tweets - Blad wartosci, user:", user_name)
             return pd.DataFrame()
         except:
-            print("Get tweets - Cos poszlo nie tak")
+            print("Get tweets - Cos poszlo nie tak, user:", user_name)
             return pd.DataFrame()
+
     def generate_word_cloud(self):
-        tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
+        tweets = self.get_tweets(self.user_name, self.search_words, self.Since, self.Until, self.num_of_tweets)
+        if tweets.empty:
+            return False
         try:
             stopwords = set(STOPWORDS)
             lemmatizer_enabled = True
@@ -124,17 +121,22 @@ class TweetsData:
                     height=500,
                     stopwords=stopwords).generate(str(preprocessed_tweets_text))
                 wordcloud.to_file("images/file.png")
+                return True
         except ValueError:
             print("Generate word cloud - Blad wartosci")
+            return False
         except:
             print("Generate word cloud - Cos poszlo nie tak")
+            return False
 
-    def generate_interconnections_network(self):
-        tweets = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
+    def generate_interconnections_network(self, option):
+        tweets = self.get_tweets(self.user_name, self.search_words, self.Since, self.Until, self.num_of_tweets)
+        if tweets.empty:
+            return False
         try:
-            def get_friends(self):
+            def get_friends():
                 rtsmts = set()
-                rtsmts.add(self.username.lower())
+                rtsmts.add(self.user_name.lower())
                 for r in tweets.iterrows():
                     text = r[1]['tweet']
                     mts = set(re.findall(r"@(\w+)", text))
@@ -142,8 +144,9 @@ class TweetsData:
                         mt = mt.lower()
                         rtsmts.add(mt)
                 return rtsmts
+
             g = igraph.Graph(directed=True)
-            rtsmts = get_friends(self)
+            rtsmts = get_friends()
             for rtmt in rtsmts:
                 g.add_vertex(rtmt)
             relations = dict()
@@ -151,7 +154,7 @@ class TweetsData:
                 relations[someone] = dict()
                 friend_tweets = self.get_tweets(someone, self.search_words, self.Since, self.Until, self.num_of_tweets)
                 if friend_tweets.empty:
-                    print("Generate interconnections network - Brak konta")
+                    print("Generate interconnections network - Brak konta, user:", someone)
                     continue
                 for r in friend_tweets.iterrows():
                     text = r[1]['tweet']
@@ -171,23 +174,38 @@ class TweetsData:
                     g.add_edge(someone, key)
             x = 1000 * math.log(len(rtsmts))
             y = 600 * math.log(len(rtsmts))
-            visual_style = {}
-            visual_style["vertex_size"] = 40
-            visual_style["vertex_label_size"] = 50
-            visual_style["vertex_label_dist"] = 2
-            visual_style["margin"] = 250
-            visual_style["bbox"] = (x, y)
-            visual_style["vertex_label"] = rtsmts
-            visual_style["edge_width"] = [math.log(2*relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]], 1.5) for edge in
-                                          g.es]
-            comm = g.community_infomap()
-            igraph.plot(comm, "images/file.png", **visual_style, mark_groups = True)
+            visual_style = {
+                "vertex_size": 40,
+                "vertex_label_size": 50,
+                "vertex_label_dist": 2,
+                "margin": 250,
+                "bbox": (x, y),
+                "vertex_label": rtsmts,
+                "edge_width":
+                    [math.log(2 * relations[g.vs[edge.source]["name"]][g.vs[edge.target]["name"]], 1.5)
+                     for edge in g.es]
+            }
+
+            if option == "Optimal Modularity":
+                comm = g.community_optimal_modularity()
+            elif option == "Spinglass":
+                comm = g.community_spinglass()
+            elif option == "Label Propagation":
+                comm = g.community_label_propagation()
+            elif option == "Infomap":
+                comm = g.community_infomap()
+            else:
+                return False
+            igraph.plot(comm, "images/file.png", **visual_style, mark_groups=True)
             if self.test_mode_enabled():
                 self.interconnection_graph = g
+            return True
         except ValueError:
             print("Generate interconnections network - Blad wartosci")
+            return False
         except:
             print("Generate interconnections network - Cos poszlo nie tak")
+            return False
 
     def generate_user_stats(self, option):
         def generate_account_info(df):
@@ -250,7 +268,9 @@ class TweetsData:
                                 account_stats['hashtagdict'][hashtag] = 1
             return account_stats
 
-        data_frame = self.get_tweets(self.username, self.search_words, self.Since, self.Until, self.num_of_tweets)
+        data_frame = self.get_tweets(self.user_name, self.search_words, self.Since, self.Until, self.num_of_tweets)
+        if data_frame.empty:
+            return False
         account_stats = generate_account_info(data_frame)
         if self.test_mode_enabled():
             self.account_stats = account_stats
@@ -326,3 +346,4 @@ class TweetsData:
             generate_tweets_hour_chart()
         elif option == 3:
             generate_hashtag_chart()
+        return True
