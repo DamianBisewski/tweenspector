@@ -203,7 +203,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                 comm = g.community_infomap()
             else:
                 return False
-            igraph.plot(g, "images/file.png", **visual_style, mark_groups=True)    #graf można zapisać do pliku
+            igraph.plot(comm, "images/file.png", **visual_style, mark_groups=True)    #graf można zapisać do pliku
             if self.test_mode_enabled():
                 self.interconnection_graph = g
             return True
