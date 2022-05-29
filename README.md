@@ -76,7 +76,7 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 ## Uruchomienie
 1. Aby zainstalować wszystkie biblioteki, z których składa się urządzenie, po ściągnięciu źródeł należy wpisać komendę:
 ```bash
-pip install requirements.txt
+pip install -r requirements.txt
 ```
 2. Aby uruchomić aplikację, należy wpisać w katalogu app komendę:
 ```bash
