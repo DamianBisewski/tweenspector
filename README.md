@@ -78,7 +78,23 @@ Aplikacja umożliwia przeprowadzenie eksperymentów dla języka polskiego i angi
 ```bash
 pip install -r requirements.txt
 ```
-2. Aby uruchomić aplikację, należy wpisać w katalogu app komendę:
+lub
+```bash
+pip3 install -r requirements.txt
+```
+2. W przypadku uruchamiania aplikacji w systemie operacyjnym Linux należy wpisać komendę:
+```bash
+pip install python-tk
+```
+lub
+```bash
+pip3 install python-tk
+```
+3. Aby uruchomić aplikację, należy wpisać w katalogu app komendę:
 ```bash
 python MainApplication.py
+```
+lub
+```bash
+python3 MainApplication.py
 ```
