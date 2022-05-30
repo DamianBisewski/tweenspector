@@ -82,7 +82,7 @@ lub
 ```bash
 pip3 install -r requirements.txt
 ```
-2. W przypadku uruchamiania aplikacji w systemie operacyjnym Linux należy wpisać komendę:
+2. W przypadku uruchamiania aplikacji w systemie operacyjnym Linux po zainstalowaniu wymagań należy wpisać komendę:
 ```bash
 pip install python-tk
 ```
