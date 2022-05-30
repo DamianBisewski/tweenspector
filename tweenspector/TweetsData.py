@@ -96,6 +96,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                 rts = set(re.findall(r"(RT @\w+)", text))
                 for rt in rts:
                     stopwords.add(rt)
+                stopwords.add("RT")
             if lemmatizer_enabled:               #tutaj lematyzacja słów
                 original_tweets_text = tweets.tweet.values
                 nlp = pl_core_news_lg.load()     #wg modelu pl_core_news_lg ze spacy
@@ -122,7 +123,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                     height=500,
                     stopwords=stopwords).generate(str(preprocessed_tweets_text))
                 wordcloud.to_file("images/file.png")    #mapę słów można zapisać
-                return True
+            return True
         except ValueError:                  #obsługa wyjątków
             print("Generate word cloud - Blad wartosci")
             return False
