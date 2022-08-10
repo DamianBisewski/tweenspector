@@ -1,4 +1,4 @@
-spacy>=3.3.0.dev0,<3.4.0
+spacy>=3.4.0
 https://github.com/explosion/spacy-models/releases/download/pl_core_news_lg-3.3.0/pl_core_news_lg-3.3.0.tar.gz#egg=pl_core_news_lg
 git+https://github.com/minamotorin/twint.git@origin/master#egg=twint
 matplotlib~=3.5.2
