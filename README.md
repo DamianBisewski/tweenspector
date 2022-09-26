@@ -73,7 +73,12 @@ The app enables conducting experiments for tweets written in Polish and English
 3. All results given by the app should have the possibility to be saved as PNG or CSV files. In order to save the results, the user should press a dedicated button.
 
 ## Running
-1. To install all libraries needed to run TweeNspector, after downloading the source file you need to write in Linux Terminal or Windows Command Line:
+1. In order to get the source code of the application you need to write in Linux Terminal or Windows Command Line:
+```bash
+git clone https://github.com/DamianBisewski/tweenspector
+```
+
+2. To install all libraries needed to run TweeNspector, after downloading the source file you need to write in Linux Terminal or Windows Command Line:
 ```bash
 pip install -r requirements.txt
 ```
@@ -81,7 +86,7 @@ or
 ```bash
 pip3 install -r requirements.txt
 ```
-2. If you run the app in Linux operating system, after installing the requirements you should write in Linux Terminal:
+3. If you run the app in Linux operating system, after installing the requirements you should write in Linux Terminal:
 ```bash
 pip install python-tk
 ```
@@ -89,7 +94,7 @@ or
 ```bash
 pip3 install python-tk
 ```
-3. To run the application, in Windows Command Line or Linux Terminal in the app folder you need to write:
+4. To run the application, in Windows Command Line or Linux Terminal in the app folder you need to write:
 ```bash
 python MainApplication.py
 ```
