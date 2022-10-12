@@ -10,7 +10,8 @@ import matplotlib
 import math
 import random
 from App_variables import *
-
+import spacy
+import html
 
 def save_tweets_df_to_csv(filename, tweets_df):   #zapis wczytanych tweetów do CSV
     tweets_df.to_csv(filename)
@@ -79,34 +80,32 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
         if tweets.empty:                   #wczytujemy tweety, jeśli brak tweetów to wychodzimy
             return False
         try:
-            stopwords = set(STOPWORDS)     #w przeciwnym razie tworzymy słownik słów nieznaczących
             lemmatizer_enabled = True      #włączamy lematyzer
-            file = open("stopwords.txt", "r", encoding="utf8")    #słowa nieznaczące są w pliku, trzeba je wczytać z pliku
-            word = file.readline().replace('\n', '')
-            while word:
-                stopwords.add(word)
-                word = file.readline().replace('\n', '')     #dodajemy kolejno słowa
             preprocessed_tweets_text = ''              #tu tekst tweetów po przetworzeniu
             original_tweets_text = ''
+            nlp = spacy.load("pl_core_news_lg")
             for tweet in tweets.iterrows():           #tutaj kolejno szukamy wspominków o innych kontach by dodać je do słów nieznaczących
                 text = tweet[1]['tweet']
-                mts = set(re.findall(r"@(\w+)", text))
-                for mt in mts:
-                    stopwords.add(mt)
-                rts = set(re.findall(r"(RT @\w+)", text))
-                for rt in rts:
-                    stopwords.add(rt)
-                stopwords.add("RT")
-            if lemmatizer_enabled:               #tutaj lematyzacja słów
-                original_tweets_text = tweets.tweet.values
-                nlp = pl_core_news_lg.load()     #wg modelu pl_core_news_lg ze spacy
-                tweets_text_from_lemmatizer = nlp(str(original_tweets_text))    #kolejno lematyzujemy wszystkie słowa
-                preprocessed_tweets_text = ''
-                for t in tweets_text_from_lemmatizer:     #do tekstu do przetworzenia dodajemy tylko słowa znaczące
-                    if t.lemma_ not in stopwords:
-                        preprocessed_tweets_text = preprocessed_tweets_text + ' ' + t.lemma_
-            else:
-                preprocessed_tweets_text = tweets.tweet.values    #gdyby lematyzer był wyłączony to w tekście wszystkie słowa
+                # w pierwszym kroku odflitrowujemy wszystkie linki http/https
+                lst = re.findall('http://\S+|https://\S+', text)
+                for i in lst:
+                    text = text.replace(i, '')
+                # w kolejnym usuwamy wszystkie odwoloania do @nazwa
+                lst = re.findall(r"(@\w+)", text)
+                for i in lst:
+                    text = text.replace(i, '')
+                if lemmatizer_enabled:               #tutaj lematyzacja słów
+                    stopwords = nlp.Defaults.stop_words
+                    stopwords.add("RT")
+#                    original_tweets_text = tweets.tweet.values
+                    tweets_text_from_lemmatizer = nlp(str(text))    #kolejno lematyzujemy wszystkie słowa
+#                    preprocessed_tweets_text = ''
+                    for t in tweets_text_from_lemmatizer:     #do tekstu do przetworzenia dodajemy tylko słowa znaczące
+                        if t.lemma_ not in stopwords:
+                            strtoken = html.unescape(t.lemma_)
+                            preprocessed_tweets_text = preprocessed_tweets_text + ' ' + strtoken
+                else:
+                    preprocessed_tweets_text = tweets.tweet.values    #gdyby lematyzer był wyłączony to w tekście wszystkie słowa
             if self.test_mode_enabled():
                 wordcloud = WordCloud(                   #tu tworzymy mapę słów, którą w razie testowania zapisujemy, by porównać ze wzorem
                     background_color='black',
@@ -121,15 +120,16 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                     colormap='Pastel1',
                     width=1000,
                     height=500,
-                    stopwords=stopwords).generate(str(preprocessed_tweets_text))
+                    stopwords=stopwords,
+                    regexp=r"\w[\w'\&\-]*\w").generate(str(preprocessed_tweets_text))
                 wordcloud.to_file("images/file.png")    #mapę słów można zapisać
             return True
         except ValueError:                  #obsługa wyjątków
             print("Generate word cloud - Blad wartosci")
             return False
-        except:
-            print("Generate word cloud - Cos poszlo nie tak")
-            return False
+#        except:
+#            print("Generate word cloud - Cos poszlo nie tak")
+#            return False
     def wordcloud_test1_check(self):            #tu porównujemy słowa znalezione w testach ze wzorem, jeśli się różnią to wypisujemy różnice
         sample = {'świat': 1, 'zdębieć': 1, 'wywiad': 1, 'polski': 1, 'premier': 1, 'zapowiadać': 1, 'wojna': 1, 'światowy': 1, 'wywołaną': 1, 'konflikt': 1, 'Polska': 2, 'unia': 1, 'europejski': 1, 'polityka': 1, 'głupota': 1, 'przyczyna': 1, 'większość': 1, 'poważny': 1, 'nieszczęście': 1, 'Alo': 1, 'mieć': 2, 'kot': 1, 'kota': 1, 'Ala': 1, 'doprowadzić': 1, 'katastrofa': 1, 'wina': 1, 'zrzucić': 1, 'ofiara': 1, 'niszczyć': 1, 'żyto': 1, 'czas': 1, 'kłamać': 1, 'zmuszać': 1, 'kłamstwo': 1, 'byle': 1, 'uniknąć': 1, 'odpowiedzialność': 1, 'zrobić': 1, 'Sebastian': 1, 'seicento': 1}
         if sample == self.wordcloud:

@@ -13,6 +13,7 @@ from datetime import date
 from App_variables import *
 from FeatureStrategy import UserWordConnection, RelatedPeopleConnection, AccountsInfo
 from TweetsData import TweetsData, save_tweets_df_to_csv
+from sys import platform
 
 
 def remove_widgets(*item_list):
@@ -31,8 +32,9 @@ class MainApplication:
         self.parent.configure(background=bg)
         self.parent.geometry('700x750')
         self.parent.title('TweeNspector')
-        self.parent.wm_iconbitmap('images/app_icon.ico')
-        self.parent.resizable(False, False)
+        if platform == "win32":
+            self.parent.wm_iconbitmap('images/app_icon.ico')
+        self.parent.resizable(True, True)
 
         self.main_f = None  # frames
         self.nav_b = []  # buttons
