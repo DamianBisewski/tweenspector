@@ -98,7 +98,7 @@ pip3 install python-tk
 ```bash
 python MainApplication.py
 ```
-lub
+or
 ```bash
 python3 MainApplication.py
 ```
