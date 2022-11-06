@@ -17,7 +17,7 @@ def save_tweets_df_to_csv(filename, tweets_df):   #zapis wczytanych tweetów do 
     tweets_df.to_csv(filename)
 
 
-def load_tweets_df_form_csv(filename):    #wczytanie tweetów z CSV
+def load_tweets_df_from_csv(filename):    #wczytanie tweetów z CSV
     return pd.read_csv(filename)
 
 
@@ -46,7 +46,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
     def get_tweets(self, user_name, search_words, date_from, date_to, num_of_tweets):   #wczytanie tweetów
         if self.test_mode_enabled():                            #w przypadku testu z CSV
             print('TEST MODE: loading', user_name, 'tweets from disc')
-            df = load_tweets_df_form_csv(user_name + '1.csv')
+            df = load_tweets_df_from_csv(user_name + '1.csv')
             self.num_of_tweets_read = df.shape[0]
             return df
         try:                        #w przeciwnym razie konfigurujemy Twinta
@@ -71,8 +71,9 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
         except ValueError:                     #obsługujemy potencjalne wyjątki
             print("Get tweets - Blad wartosci, user:", user_name)
             return pd.DataFrame()
-        except:
-            print("Get tweets - Cos poszlo nie tak, user:", user_name)
+        except Exception as exc:
+            print("Get tweets - Cos poszlo nie tak, user: {user}, wyjatek: {excType} {excMsg}"
+                  .format(user=user_name, excType=type(exc).__name__, excMsg=str(exc)))
             return pd.DataFrame()
 
     def generate_word_cloud(self):           #tutaj tworzymy mapę słów
@@ -211,8 +212,9 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
         except ValueError:
             print("Generate interconnections network - Blad wartosci")     #obsługa wyjątków
             return False
-        except:
-            print("Generate interconnections network - Cos poszlo nie tak")
+        except Exception as exc:
+            print("Generate interconnections network - Cos poszlo nie tak: {excType} {excMsg}"
+                  .format(excType=type(exc).__name__, excMsg=str(exc)))
             return False
 
     def interconnection_network_test1_check(self):          #porównujemy czy graf wygenerowany testowo jest izomorficznie identyczy ze wzorem
