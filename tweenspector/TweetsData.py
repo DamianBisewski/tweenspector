@@ -61,6 +61,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
     def generate_word_cloud(self):
         worldcloud = self.create_word_cloud()
         return worldcloud is not None
+
     def create_word_cloud(self): #tutaj tworzymy mapę słów
         tweets = self.get_tweets(self.user_name, self.search_words, self.Since, self.Until, self.num_of_tweets)
         if tweets.empty:                   #wczytujemy tweety, jeśli brak tweetów to wychodzimy
@@ -114,7 +115,8 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
     def generate_interconnections_network(self, option):
         interconnections_network = self.create_interconnections_network(option)
         return interconnections_network is not None
-    def create_interconnections_network(self, option): #tu generacja grafu powiązań
+
+    def create_interconnections_network(self, option): #tu utworzenie grafu powiązań
         tweets = self.get_tweets(self.user_name, self.search_words, self.Since, self.Until, self.num_of_tweets)
         if tweets.empty:
             return None
@@ -192,7 +194,8 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
     def generate_user_stats(self, option):
         user_stats = self.create_user_stats(option)
         return user_stats is not None
-    def create_user_stats(self, option):#tu generujemy statystyki o koncie
+    
+    def create_user_stats(self, option): #tu obliczmy statystyki konta
         def generate_account_info(df):
             date1 = pd.to_datetime(df.iloc[0].date)
             date2 = pd.to_datetime(df.iloc[int(self.num_of_tweets_read) - 1].date)
