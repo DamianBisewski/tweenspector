@@ -4,11 +4,9 @@ import re
 import igraph
 import pandas as pd
 import statistics
-import pl_core_news_lg
 import matplotlib.pyplot as plt
 import matplotlib
 import math
-import random
 from App_variables import *
 import spacy
 import html
