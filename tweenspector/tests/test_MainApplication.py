@@ -8,13 +8,12 @@ from tweenspector.MainApplication import MainApplication
 
 
 class TestMainApplication(unittest.TestCase):
-    @patch("tweenspector.MainApplication.print")
     @patch("tweenspector.MainApplication.tk")
     @patch("tweenspector.MainApplication.ttk")
     @patch("tweenspector.MainApplication.DateEntry")
     @patch("tweenspector.MainApplication.Image")
     @patch("tweenspector.MainApplication.ImageTk")
-    def test_can_create_MainApplication(self, mock_ImageTk, mock_Image, mock_DateEntry, mock_ttk, mock_tk, mock_print):
+    def test_can_create_MainApplication(self, mock_ImageTk, mock_Image, mock_DateEntry, mock_ttk, mock_tk):
         mock_root = MagicMock()
         app = MainApplication(mock_root)
         self.assertIsNotNone(app)

@@ -40,9 +40,8 @@ class TestTweetsData(unittest.TestCase):
         TwDt.save_tweets_df_to_csv(filename, mock_tweets_df)
         mock_to_csv.assert_called_once_with(filename)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.twint")
-    def test_can_get_tweets(self, mock_twint, mock_print):
+    def test_can_get_tweets(self, mock_twint):
         test_data = [
             self.getSampleTweets(),
             pd.DataFrame()
@@ -56,9 +55,8 @@ class TestTweetsData(unittest.TestCase):
                 self.assertIsNotNone(tweets)
                 self.assertEqual(len(data), len(tweets))
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.twint")
-    def test_get_tweets_returns_empty_dataframe_on_exception(self, mock_twint, mock_print):
+    def test_get_tweets_returns_empty_dataframe_on_exception(self, mock_twint):
         test_exceptions = [ValueError, TypeError, AttributeError, Exception]
         for exc in test_exceptions:
             with self.subTest(exc=exc):
@@ -79,10 +77,9 @@ class TestTweetsData(unittest.TestCase):
                 self.assertEqual(ret, expected_res)
                 mock_td.create_word_cloud.assert_called_once()
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.spacy")
     @patch("tweenspector.TweetsData.WordCloud")
-    def test_can_create_word_cloud(self, mock_WordCloud, mock_spacy, mock_print):
+    def test_can_create_word_cloud(self, mock_WordCloud, mock_spacy):
         test_data = [
             (self.getSampleTweets(), True),
             (pd.DataFrame(), False)
@@ -99,10 +96,9 @@ class TestTweetsData(unittest.TestCase):
                 self.assertEqual(ret is not None, expected_res)
                 mock_WordCloud.assert_called_once()
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.spacy")
     @patch("tweenspector.TweetsData.WordCloud")
-    def test_create_word_cloud_returns_none_on_spacy_exception(self, mock_WordCloud, mock_spacy, mock_print):
+    def test_create_word_cloud_returns_none_on_spacy_exception(self, mock_WordCloud, mock_spacy):
         tweets = self.getSampleTweets()
         test_exceptions = [ValueError, TypeError, AttributeError, Exception]
         for exc in test_exceptions:
@@ -115,10 +111,9 @@ class TestTweetsData(unittest.TestCase):
                 ret = TweetsData.create_word_cloud(mock_td)
                 self.assertIsNone(ret)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.spacy")
     @patch("tweenspector.TweetsData.WordCloud")
-    def test_create_word_cloud_returns_none_on_WordCloud_exception(self, mock_WordCloud, mock_spacy, mock_print):
+    def test_create_word_cloud_returns_none_on_WordCloud_exception(self, mock_WordCloud, mock_spacy):
         tweets = self.getSampleTweets()
         test_exceptions = [ValueError, TypeError, AttributeError, Exception]
         for exc in test_exceptions:
@@ -131,10 +126,9 @@ class TestTweetsData(unittest.TestCase):
                 ret = TweetsData.create_word_cloud(mock_td)
                 self.assertIsNone(ret)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.spacy")
     @patch("tweenspector.TweetsData.WordCloud")
-    def test_create_word_cloud_returns_correct_content(self, mock_WordCloud, mock_spacy, mock_print):
+    def test_create_word_cloud_returns_correct_content(self, mock_WordCloud, mock_spacy):
         tweets = self.getSampleTweets()
 
         mock_td = MagicMock()
@@ -181,9 +175,8 @@ class TestTweetsData(unittest.TestCase):
                 self.assertEqual(ret, expected_res)
                 mock_td.create_interconnections_network.assert_called_once()
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.igraph")
-    def test_can_create_interconnections_network(self, mock_igraph, mock_print):
+    def test_can_create_interconnections_network(self, mock_igraph):
         tweet_df = self.getSampleTweets()
         test_data = [
             (tweet_df, "Optimal Modularity", True),
@@ -204,9 +197,8 @@ class TestTweetsData(unittest.TestCase):
                 ret = TweetsData.create_interconnections_network(mock_td, option)
                 self.assertEqual(ret is not None, expected_ret)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.igraph")
-    def test_create_interconnections_network_returns_none_on_exception(self, mock_igraph, mock_print):
+    def test_create_interconnections_network_returns_none_on_exception(self, mock_igraph):
         tweets = self.getSampleTweets()
         test_exceptions = [ValueError, TypeError, AttributeError, Exception]
         test_options = ["Optimal Modularity", "Spinglass", "Label Propagation", "Infomap"]
@@ -222,9 +214,10 @@ class TestTweetsData(unittest.TestCase):
                 ret = TweetsData.create_interconnections_network(mock_td, option)
                 self.assertIsNone(ret)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.igraph")
-    def test_create_interconnection_network_returns_correct_content(self, mock_igraph, mock_print):
+    def test_create_interconnection_network_returns_correct_content(self, mock_igraph):
+        print("--- test_create_interconnection_network_returns_correct_content() ---")
+
         option = "Label Propagation"
 
         mock_td = MagicMock()
@@ -243,6 +236,8 @@ class TestTweetsData(unittest.TestCase):
         sample.add_edge("szczepimysie", "mz_gov_pl")
         self.assertTrue(sample.isomorphic_vf2(ig))
 
+        print("--- test_create_interconnection_network_returns_correct_content() DONE ---")
+
     def test_can_generate_user_stats(self):
         test_rets = [True, False]
         test_options = [0, 1, 2, 3]
@@ -256,11 +251,10 @@ class TestTweetsData(unittest.TestCase):
                 self.assertEqual(ret, expected_res)
                 mock_td.create_user_stats.assert_called_once()
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.pd")
     @patch("tweenspector.TweetsData.plt")
     @patch("tweenspector.TweetsData.matplotlib")
-    def test_can_create_user_stats(self, mock_matplotlib, mock_plt, mock_pd, mock_print):
+    def test_can_create_user_stats(self, mock_matplotlib, mock_plt, mock_pd):
         tweets_df = self.getSampleTweets()
         options = [
             (tweets_df, -1, False),
@@ -281,11 +275,10 @@ class TestTweetsData(unittest.TestCase):
                 ret = TweetsData.create_user_stats(mock_td, option)
                 self.assertEqual(ret is not None, expected_ret)
 
-    @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.pd")
     @patch("tweenspector.TweetsData.plt")
     @patch("tweenspector.TweetsData.matplotlib")
-    def test_create_user_stats_returns_correct_content(self, mock_matplotlib, mock_plt, mock_pd, mock_print):
+    def test_create_user_stats_returns_correct_content(self, mock_matplotlib, mock_plt, mock_pd):
         tweets = self.getTweetsFromCsv("donaldtusk")
         option = 1
 
