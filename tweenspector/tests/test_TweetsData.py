@@ -313,11 +313,18 @@ class TestTweetsData(unittest.TestCase):
     def getTweetsFromCsv(self, filename):
         if filename in self.tweets_dict:
             return self.tweets_dict.get(filename)
-        tweets = pd.read_csv("{f}1.csv".format(f=filename),
-                             converters={
-                                 "place": lambda p: str(p),
-                                 "hour": lambda h: str(h),
-                                 "hashtags": lambda h: [x.strip(" '\"") for x in str(h).strip("[]").split(",")]
-                             })
-        self.tweets_dict[filename] = tweets
-        return tweets
+        try:
+            fn = "{f}1.csv".format(f=filename)
+            tweets = pd.read_csv(fn,
+                                 converters={
+                                     "place": lambda p: str(p),
+                                     "hour": lambda h: str(h),
+                                     "hashtags": lambda h: [x.strip(" '\"") for x in str(h).strip("[]").split(",")]
+                                 })
+            self.tweets_dict[filename] = tweets
+            return tweets
+        except Exception as exc:
+            print("Failed to load {fn} - {excType}: {excMsg}".format(fn=fn,
+                                                                         excType=type(exc).__name__,
+                                                                         excMsg=str(exc)))
+            raise exc
