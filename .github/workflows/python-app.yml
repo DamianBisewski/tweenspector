@@ -35,4 +35,4 @@ jobs:
     - name: Test with unittest
       run: |
         cd tweenspector
-        unittest discover -s tests
+        python -m unittest discover -s tests
