@@ -12,6 +12,15 @@ from wordcloud import WordCloud
 import igraph
 
 
+def read_tweets_from_csv(filename):
+    return pd.read_csv(filename,
+                       converters={
+                           "place": lambda p: str(p),
+                           "hour": lambda h: str(h),
+                           "hashtags": lambda h: [x.strip(" '\"") for x in str(h).strip("[]").split(",")]
+                       })
+
+
 class TestTweetsData(unittest.TestCase):
     tweets_dict = {}
 
@@ -85,19 +94,21 @@ class TestTweetsData(unittest.TestCase):
     def test_can_create_word_cloud(self, mock_WordCloud, mock_spacy, mock_print):
         test_data = [
             (self.getSampleTweets(), True),
+            (self.getSampleTweetsWithLinksAndMentions(), True),
             (pd.DataFrame(), False)
         ]
         for (data, expected_res) in test_data:
             with self.subTest(data=data, expected_res=expected_res):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=data)
                 mock_td.self.num_of_tweets_read = data.shape[0]
                 mock_nlp = MagicMock(side_effect=lambda x: (MagicMock(lemma_=v) for v in x.split(" ")))
                 mock_spacy.load = MagicMock(return_value=mock_nlp)
                 ret = TweetsData.create_word_cloud(mock_td)
                 self.assertEqual(ret is not None, expected_res)
-                mock_WordCloud.assert_called_once()
+                if expected_res:
+                    mock_WordCloud.assert_called_once()
+                    mock_WordCloud.reset_mock()
 
     @patch("tweenspector.TweetsData.print")
     @patch("tweenspector.TweetsData.spacy")
@@ -108,7 +119,6 @@ class TestTweetsData(unittest.TestCase):
         for exc in test_exceptions:
             with self.subTest(exc=exc):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=tweets)
                 mock_td.self.num_of_tweets_read = tweets.shape[0]
                 mock_spacy.load = MagicMock(side_effect=exc)
@@ -124,7 +134,6 @@ class TestTweetsData(unittest.TestCase):
         for exc in test_exceptions:
             with self.subTest(exc=exc):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=tweets)
                 mock_td.self.num_of_tweets_read = tweets.shape[0]
                 mock_WordCloud.side_effect = exc
@@ -138,7 +147,6 @@ class TestTweetsData(unittest.TestCase):
         tweets = self.getSampleTweets()
 
         mock_td = MagicMock()
-        mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
         mock_td.get_tweets = MagicMock(return_value=tweets)
         mock_td.self.num_of_tweets_read = tweets.shape[0]
 
@@ -198,7 +206,6 @@ class TestTweetsData(unittest.TestCase):
         for (tweets, option, expected_ret) in test_data:
             with self.subTest(option=option, expected_ret=expected_ret):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=tweets)
                 mock_td.self.num_of_tweets_read = tweets.shape[0]
                 ret = TweetsData.create_interconnections_network(mock_td, option)
@@ -215,7 +222,6 @@ class TestTweetsData(unittest.TestCase):
         for (option, exc) in test_data:
             with self.subTest(option=option, exc=exc):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=tweets)
                 mock_td.self.num_of_tweets_read = tweets.shape[0]
                 mock_igraph.Graph = MagicMock(side_effect=exc)
@@ -229,7 +235,6 @@ class TestTweetsData(unittest.TestCase):
 
         mock_td = MagicMock()
         mock_td.user_name = "szczepimysie"
-        mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
         mock_td.get_tweets = MagicMock(side_effect=lambda user_name, *_: self.getTweetsFromCsv(user_name))
 
         mock_igraph.Graph = MagicMock(side_effect=lambda directed: igraph.Graph(directed=directed))
@@ -262,12 +267,17 @@ class TestTweetsData(unittest.TestCase):
     @patch("tweenspector.TweetsData.matplotlib")
     def test_can_create_user_stats(self, mock_matplotlib, mock_plt, mock_pd, mock_print):
         tweets_df = self.getSampleTweets()
+        tweets_dfwlam = self.getSampleTweetsWithLinksAndMentions()
         options = [
             (tweets_df, -1, False),
             (tweets_df, 0, True),
+            (tweets_dfwlam, 0, True),
             (tweets_df, 1, True),
+            (tweets_dfwlam, 1, True),
             (tweets_df, 2, True),
+            (tweets_dfwlam, 2, True),
             (tweets_df, 3, True),
+            (tweets_dfwlam, 3, True),
             (tweets_df, 4, False),
             (pd.DataFrame(), 1, False)
         ]
@@ -275,7 +285,6 @@ class TestTweetsData(unittest.TestCase):
         for (tweets, option, expected_ret) in options:
             with self.subTest(option=option, expected_ret=expected_ret):
                 mock_td = MagicMock()
-                mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
                 mock_td.get_tweets = MagicMock(return_value=tweets)
                 mock_td.self.num_of_tweets_read = tweets.shape[0]
                 ret = TweetsData.create_user_stats(mock_td, option)
@@ -290,7 +299,6 @@ class TestTweetsData(unittest.TestCase):
         option = 1
 
         mock_td = MagicMock()
-        mock_td.test_mode_enabled = MagicMock(return_value=False)  # TODO remove
         mock_td.get_tweets = MagicMock(return_value=tweets)
         mock_td.num_of_tweets_read = tweets.shape[0]
 
@@ -317,21 +325,22 @@ class TestTweetsData(unittest.TestCase):
     def getSampleTweets(self):
         return self.getTweetsFromCsv("wordcloud_test")
 
+    def getSampleTweetsWithLinksAndMentions(self):
+        return self.getTweetsFromCsv("wordcloud_with_links_and_mentions_test")
+
     def getTweetsFromCsv(self, filename):
         if filename in self.tweets_dict:
             return self.tweets_dict.get(filename)
-        try:
-            fn = "{f}1.csv".format(f=filename)
-            tweets = pd.read_csv(fn,
-                                 converters={
-                                     "place": lambda p: str(p),
-                                     "hour": lambda h: str(h),
-                                     "hashtags": lambda h: [x.strip(" '\"") for x in str(h).strip("[]").split(",")]
-                                 })
-            self.tweets_dict[filename] = tweets
-            return tweets
-        except Exception as exc:
-            print("Failed to load {fn} - {excType}: {excMsg}".format(fn=fn,
-                                                                         excType=type(exc).__name__,
-                                                                         excMsg=str(exc)))
-            raise exc
+        for fn in ["tweenspector/tests/{f}1.csv".format(f=filename),
+                   "tests/{f}1.csv".format(f=filename),
+                   "{f}1.csv".format(f=filename)]:
+            try:
+                tweets = read_tweets_from_csv(fn)
+                self.tweets_dict[filename] = tweets
+                return tweets
+            except Exception as e:
+                exc = e
+        print("Failed to load CSV: {filename} - {excType}: {excMsg}".format(filename=filename,
+                                                                            excType=type(exc).__name__,
+                                                                            excMsg=str(exc)))
+        raise exc
