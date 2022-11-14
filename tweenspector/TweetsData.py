@@ -21,7 +21,7 @@ def load_tweets_df_from_csv(filename):    #wczytanie tweetów z CSV
 
 class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie metody potrzebne do wczytania tweetów i prezentacji danych
     def __init__(self, user_name, search_words, date_from, date_to, num_of_tweets=500):
-        self.user_name = user_name                #nazwa użytkownika, liczba tweetów, daty od/do, poszukiwane słowa, czy testujemy, a także na potrzeby testów zapis pozyskanych danych
+        self.user_name = user_name                #nazwa użytkownika, liczba tweetów, daty od/do, a także poszukiwane słowa
         self.num_of_tweets = num_of_tweets
         self.num_of_tweets_read = 0
         self.Since = date_from
@@ -91,7 +91,7 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                             preprocessed_tweets_text = preprocessed_tweets_text + ' ' + strtoken
                 else:
                     preprocessed_tweets_text = tweets.tweet.values    #gdyby lematyzer był wyłączony to w tekście wszystkie słowa
-            #tu rysujemy mapę słów jeśli nie testowaliśmy
+            #tu rysujemy mapę słów
             wordcloud = WordCloud(
                 background_color='black',
                 colormap='Pastel1',
@@ -228,14 +228,13 @@ class TweetsData:       #tworzymy obiekt klasy TweetsData, który ma wszystkie m
                 'usersdict': dict(sorted(usersdict.items(), key=lambda x: x[1])),    #uzytkownicy, o których wspomniano
                 'hourdict': dict(sorted(hourdict.items(), key=lambda x: x[1]))}     #i godziny napisania
 
-            # due to the bug in twint loading place field from csv this feature is disabled in test mode
             for place in df.place:               #tu miejsca, z których pisano są zliczane
                 if place != '':
                     account_stats['places'].add(place)
 
             # for hashtags loaded from tweeter twint provides them as list of strings
             for hashtags in df.hashtags:
-                for hashtag in hashtags:            #tu hasztagi zliczane nietestowo
+                for hashtag in hashtags:
                     if hashtag:
                         if hashtag in account_stats['hashtagdict']:
                             account_stats['hashtagdict'][hashtag] = account_stats['hashtagdict'][hashtag] + 1
