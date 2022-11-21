@@ -1,0 +1,1 @@
+pyinstaller --onefile --distpath dist --workpath build MainApplication.py
