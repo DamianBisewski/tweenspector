@@ -16,7 +16,9 @@ from bokeh.transform import dodge
 from numpy.random import randint
 import pandas as pd
 import nest_asyncio
+
 nest_asyncio.apply()
+
 
 class Dashboard:
     """
@@ -30,21 +32,38 @@ class Dashboard:
         self.active_window_size = active_window_size
         self.layout = None
 
-    opt = ['0', '100', '200', '300', '400', '500', '600', '700', '800', '900', '1000', '1100',
-           '1200', '1300', '1400', '1500', '1600', '1700', '1800', '1900', '2000', '2100', '2200',
-           '2300', '2400', '2500', '2600', '2700', '2800', '2900', '3000']
-    username = TextInput(title="Nazwa użytkownika")
-    search_word = TextInput(title="Poszukiwane słowo")
-    date_from = DatePicker(title="Data początkowa", value=date.today() - datetime.timedelta(days=30))
-    date_until = DatePicker(title="Data końcowa", value=date.today())
-    num_of_tweets = Select(title="Liczba tweetow", value='0', options=opt)
-    p = None
-    q = None
-    r = None
-    s = None
-    columns = None
-    def get_tweets(self):   #wczytanie tweetów
-        try:                        #w przeciwnym razie konfigurujemy Twinta
+        opt = ['0', '100', '200', '300', '400', '500', '600', '700', '800', '900', '1000', '1100',
+               '1200', '1300', '1400', '1500', '1600', '1700', '1800', '1900', '2000', '2100', '2200',
+               '2300', '2400', '2500', '2600', '2700', '2800', '2900', '3000']
+        self.username = TextInput(title="Nazwa użytkownika")
+        self.search_word = TextInput(title="Poszukiwane słowo")
+        self.date_from = DatePicker(title="Data początkowa", value=date.today() - datetime.timedelta(days=30))
+        self.date_until = DatePicker(title="Data końcowa", value=date.today())
+        self.num_of_tweets = Select(title="Liczba tweetow", value='0', options=opt)
+        self.refresh_button = Button(label="Załaduj tweety", button_type="default", width=150)
+        self.refresh_button.on_event('button_click', self.refresh)
+        self.export_button = Button(label="Zapisz do CSV", button_type="default", width=150)
+        self.export_button.on_event('button_click', self.save_to_csv)
+        self.p = None
+        self.q = None
+        self.r = None
+        self.s = None
+        self.columns = None
+
+    def refresh(self):
+        source = ColumnDataSource(self.get_tweets())
+        self.s = DataTable(source=source, columns=self.columns, width=500, height=280, editable=False)
+        self.layout.children[0].children[0] = column(self.p, self.q)
+        self.layout.children[0].children[1] = column(self.r, self.s)
+        self.layout.children[0].children[2] = column(self.username, self.search_word, self.date_from,
+                                                     self.date_until, self.num_of_tweets,
+                                                     row(self.refresh_button, self.export_button))
+
+    def save_to_csv(self):
+        print("Zapisywanie!")
+
+    def get_tweets(self):  # wczytanie tweetów
+        try:  # w przeciwnym razie konfigurujemy Twinta
             c = twint.Config()
             c.Username = self.username.value
             c.Limit = self.num_of_tweets.value
@@ -58,12 +77,12 @@ class Dashboard:
             c.Search = self.search_word.value
             c.Hide_output = True
             twint.run.Profile(c)
-            if twint.output.panda.Tweets_df.empty:    #jeśli nie znaleziono tweetów to informujemy o tym
+            if twint.output.panda.Tweets_df.empty:  # jeśli nie znaleziono tweetów to informujemy o tym
                 print("No tweets from user: ", self.username.value)
                 return twint.output.panda.Tweets_df
-            else:                                     #zwracamy pustą lub pełną ramke danych
+            else:  # zwracamy pustą lub pełną ramke danych
                 return twint.output.panda.Tweets_df
-        except ValueError:                     #obsługujemy potencjalne wyjątki
+        except ValueError:  # obsługujemy potencjalne wyjątki
             print("Get tweets - Blad wartosci, user:", self.username.value)
             return pd.DataFrame()
         except Exception as exc:
@@ -71,19 +90,6 @@ class Dashboard:
                   .format(user=self.username.value, excType=type(exc).__name__, excMsg=str(exc)))
             return pd.DataFrame()
 
-    def refresh(self):
-        source = ColumnDataSource(self.get_tweets())
-        new_graph4 = DataTable(source=source, columns=self.columns, width=500, height=280, editable=False)
-        self.layout = layout([
-            row(column(self.p, self.q),
-                column(self.r, new_graph4),
-                column(self.username, self.search_word, self.date_from, self.date_until, self.num_of_tweets,
-                       row(self.refresh_button, self.export_button)
-                       ))
-        ])
-
-    def save_to_csv(self):
-        print("Zapisywanie!")
 
 
     def generate_figures(self):
@@ -107,9 +113,9 @@ class Dashboard:
         nx.set_edge_attributes(G, edge_attrs, "edge_color")
 
         q = figure(width=400, height=400, x_range=(-1.2, 1.2), y_range=(-1.2, 1.2),
-                      x_axis_location=None, y_axis_location=None, toolbar_location=None,
-                      title="Graph Interaction Demo", background_fill_color="#efefef",
-                      tooltips="index: @index, club: @club")
+                   x_axis_location=None, y_axis_location=None, toolbar_location=None,
+                   title="Graph Interaction Demo", background_fill_color="#efefef",
+                   tooltips="index: @index, club: @club")
         q.grid.grid_line_color = None
 
         graph_renderer = from_networkx(G, nx.spring_layout, scale=1, center=(0, 0))
@@ -152,6 +158,7 @@ class Dashboard:
         ]
         s = DataTable(source=source, columns=self.columns, width=400, height=280, editable=False)
         return [p, q, r, s]
+
     def do_layout(self):
         """
         generates the overall layout by creating all the widgets, buttons etc and arranges
@@ -162,20 +169,17 @@ class Dashboard:
         interconnections_g = None
         statistics_g = None
         tweet_l = None
-        refresh_button = Button(label="Załaduj tweety", button_type="default", width=150)
-        refresh_button.on_event('button_click', self.refresh)
-        export_button = Button(label="Zapisz do CSV", button_type="default", width=150)
-        export_button.on_event('button_click', self.save_to_csv)
-        p, q, r, s = self.generate_figures()
-        self.layout = layout([
-            row(column(p, q),
-                column(r, s),
+
+        self.p, self.q, self.r, self.s = self.generate_figures()
+        self.layout = layout(children=[
+            row(column(self.p, self.q),
+                column(self.r, self.s),
                 column(self.username, self.search_word, self.date_from, self.date_until, self.num_of_tweets,
-                       row(refresh_button, export_button)
+                       row(self.refresh_button, self.export_button)
                        ))
         ])
         curdoc().add_root(self.layout)
-        curdoc().title = "Przykładowy dashboard"
+        curdoc().title = "Tweenspector"
 
 
 dash = Dashboard()
