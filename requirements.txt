@@ -2,3 +2,4 @@ numpy
 pandas
 bokeh
 nest-asyncio
+git+https://github.com/minamotorin/twint.git@origin/master#egg=twint
